@@ -180,7 +180,7 @@ def run_condition(v, u, train_F, train_T, val_F, val_T, indices, lr, checkpoint)
            "best_path": best_path, "paths_to_5pct_ce_improvement": reached_path,
            "train_seconds_to_5pct": reached_s, "total_train_seconds": train_seconds,
            "spikes_e": total_spikes_e, "spikes_m": total_spikes_m,
-           "paths_completed": int(history[-1]["path"])}
+           "paths_completed": path_id}
     return row, history
 
 
@@ -225,6 +225,8 @@ def main():
     ap.add_argument("--lr", type=float, default=0.6)
     ap.add_argument("--seed", type=int, default=7311)
     ap.add_argument("--allow-download", action="store_true")
+    ap.add_argument("--u-index", type=int, default=None,
+                    help="Optional fixed-u row 0..9, for parallel CI executions")
     a = ap.parse_args()
     if a.paths < 1 or a.checkpoint < 1:
         ap.error("paths and checkpoint must be positive")
@@ -260,8 +262,12 @@ def main():
                Ftrain, Ttrain, indices[0], a.lr)
     rows = []; curves = []
     # A distinct reference control preserves the repository's actual equilibrium.
-    settings = [(float(v), float(u), False) for u in VALUES for v in VALUES]
-    settings += [(float(p3.V0), float(p3.U0), True)]
+    if a.u_index is not None and not 0 <= a.u_index < 10:
+        ap.error("--u-index must be between 0 and 9")
+    u_list = VALUES if a.u_index is None else VALUES[a.u_index:a.u_index + 1]
+    settings = [(float(v), float(u), False) for u in u_list for v in VALUES]
+    if a.u_index is None or a.u_index == 0:
+        settings.append((float(p3.V0), float(p3.U0), True))
     for v, u, is_reference in settings:
         row, history = run_condition(
             v, u, Ftrain, Ttrain, Fval, Tval, indices, a.lr, a.checkpoint)
@@ -292,6 +298,7 @@ def main():
                 "loss": "held-out masked patch token cross entropy (nats)",
                 "convergence": "first checkpoint with held-out CE <= 95% of its initial CE",
                 "numerically_failed": sum(r["status"] != "completed" for r in rows),
+                "u_index": a.u_index,
                 "best_setting": best}
     (a.out / "summary.json").write_text(json.dumps(metadata, indent=2, allow_nan=False))
     (a.out / "REPORT.md").write_text(
