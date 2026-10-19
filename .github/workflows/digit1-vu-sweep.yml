@@ -1,0 +1,56 @@
+name: MNIST digit-1 initial v-u full sweep
+
+on:
+  push:
+    branches:
+      - experiment/digit1-vu-sweep-20261019
+    paths:
+      - "experiments/sweep_digit1_vu.py"
+      - ".github/workflows/digit1-vu-sweep.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    name: Fixed u index ${{ matrix.u_index }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        u_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    env:
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      NUMBA_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install simulation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy numba scipy scikit-learn matplotlib
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Run all ten v values for one fixed u
+        run: |
+          python -u experiments/sweep_digit1_vu.py \
+            --repo . \
+            --out "results/u${{ matrix.u_index }}" \
+            --u-index ${{ matrix.u_index }} \
+            --paths 50 --checkpoint 5 --train-contexts 640 \
+            --val-contexts 192 --train-images 512 --val-images 256
+      - name: Publish results for fixed u
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: digit1-vu-u${{ matrix.u_index }}
+          path: results/u${{ matrix.u_index }}/
+          if-no-files-found: warn
+          retention-days: 30
