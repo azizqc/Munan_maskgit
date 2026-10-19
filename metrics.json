@@ -1,0 +1,54 @@
+{
+  "status": "B0 conventional MaskGIT MNIST-012 capacity/decoder cleanup complete",
+  "model": "bidirectional Transformer MaskGIT",
+  "representation": "7x7 discrete patch tokens, K=64",
+  "no_new_modules": true,
+  "final_maskgit": {
+    "condition_match": 0.9666666666666667,
+    "valid_012_rate": 0.97,
+    "mean_confidence": 0.9596962332725525,
+    "confidence_ge_095": 0.84,
+    "TVD_to_balanced_012": 0.029999999999999985,
+    "class_counts_0_to_9": [
+      197,
+      194,
+      191,
+      9,
+      0,
+      0,
+      1,
+      0,
+      8,
+      0
+    ],
+    "morphology": {
+      "mean_connected_components": 2.2916666666666665,
+      "mean_largest_component_fraction_of_foreground": 0.833247205615937,
+      "mean_isolated_single_pixel_components": 0.24
+    },
+    "unique_token_fraction": 1.0,
+    "parameters": 824896,
+    "checkpoint_epoch": 18,
+    "checkpoint_val_ce": 1.1593495782796859,
+    "decode_steps": 10,
+    "choice_temperature": 0.25
+  },
+  "unet_md4_quality_anchor": {
+    "valid_012_rate": 0.9666666666666667,
+    "mean_classifier_confidence": 0.970896303653717,
+    "confidence_ge_095": 0.8933333333333333,
+    "distribution_TVD_to_target_012": 0.07666666666666663,
+    "unique_fraction": 1.0,
+    "morphology": {
+      "mean_connected_components": 1.3616666666666666,
+      "mean_largest_component_fraction_of_foreground": 0.9639323280432638,
+      "mean_isolated_single_pixel_components": 0.13833333333333334
+    }
+  },
+  "interpretation": {
+    "semantic_quality_gate": "reached/approximately matched on validity and diversity",
+    "morphology_gate": "not fully matched; MaskGIT remains more fragmented than U-Net",
+    "capacity_result": "0.825M clearly improves over 0.356M; epoch-18 checkpoint retained after later validation worsened",
+    "decision": "freeze as strong B0 candidate; do not add physical/dynamical modules until morphology gap is accepted or representation is revisited"
+  }
+}

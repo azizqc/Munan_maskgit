@@ -1,0 +1,42 @@
+{
+  "README.md": {
+    "sha256": "ee68b6603a443f2efac7501da0be2d04216c3fa04ccabe032e8b149ada6b3c8a",
+    "bytes": 2486
+  },
+  "best.pt": {
+    "sha256": "49e4e3b751c5693b976fb2f272d0b4cdbe9005139a2ab73d4292d939e52f4045",
+    "bytes": 3313921
+  },
+  "capacity_comparison.json": {
+    "sha256": "edb5e61108ea4119720f9c1eeeb421cd0104b1ff2324bf9e67cb83e34dab6b97",
+    "bytes": 14294
+  },
+  "codebook.npy": {
+    "sha256": "20f0141b2625440f86b4d264bf7727b7e677388db4992a5a0ba5dbee680407ae",
+    "bytes": 4224
+  },
+  "final_600.npz": {
+    "sha256": "a88df160eb08b7b7e552231dd9193f3ffca2b22c54516749c6db0bb2f1011552",
+    "bytes": 173777
+  },
+  "final_600.png": {
+    "sha256": "b4e7feb133c26074e441fa60a86a1d5dfee00ff7ef77dea3ab78162a78c12d4a",
+    "bytes": 89588
+  },
+  "generate_from_frozen.py": {
+    "sha256": "2b7f225b087629def0a94c59183103db45385de2dfa239bc16b1e6b34ce2aab6",
+    "bytes": 2315
+  },
+  "maskgit_b0_mnist012.py": {
+    "sha256": "2adf6a19281933d9a1b77ac34bce21aab099d364449bb6d88e20e710577574aa",
+    "bytes": 14276
+  },
+  "metrics.json": {
+    "sha256": "f8fe9405ef7ca63d748d0e083cd895a4c8b991ab79646af718755bcfc0ef8fcb",
+    "bytes": 1925
+  },
+  "requirements.txt": {
+    "sha256": "eb0dcfa3366e30dc1719b35386234dc457573f004b3d5e7890f50ce9e873ebdb",
+    "bytes": 36
+  }
+}
