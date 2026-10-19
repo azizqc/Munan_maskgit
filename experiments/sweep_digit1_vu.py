@@ -31,6 +31,7 @@ import matplotlib.pyplot as plt
 from maskgit_b0_mnist012 import encode as patch_encode
 from maskgit_b0_mnist012 import fit_codebook
 import SNN_TRANSFORM_R6B3_HG_DYNAMICS_STAGE4_DIRECT_SPIKE as p3
+from SNN_TRANSFORM_R6B3_HG_DYNAMICS_STAGE4_DIRECT_SPIKE import (fast_izh_step, softmax_numba, G_E, G_M, CV_E, CU_E, CV_M, CU_M)
 
 MNIST_URL = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
 VALUES = np.linspace(0.0, 1000.0, 10)
@@ -48,11 +49,11 @@ def force_path(W, ve, ue, vm, um, ze, zm, F, T, indices, lr):
         ci = indices[k]
         x = F[ci]
         z = W0 @ x
-        p = p3.softmax_numba(z)
-        E, ne = p3.fast_izh_step(ve, ue, x, ze, p3.G_E, p3.CV_E, p3.CU_E)
+        p = softmax_numba(z)
+        E, ne = fast_izh_step(ve, ue, x, ze, G_E, CV_E, CU_E)
         tar = np.zeros(V, dtype=np.float64)
         tar[T[ci]] = 1.0
-        M, nm = p3.fast_izh_step(vm, um, tar, p, p3.G_M, p3.CV_M, p3.CU_M)
+        M, nm = fast_izh_step(vm, um, tar, p, G_M, CV_M, CU_M)
         spikes_e += ne
         spikes_m += nm
         for o in range(V):
