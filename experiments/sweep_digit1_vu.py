@@ -142,6 +142,8 @@ def run_condition(v, u, train_F, train_T, val_F, val_T, indices, lr, checkpoint)
     start_ce, start_acc = evaluate(W, val_F, val_T)
     best_ce = start_ce
     best_acc = start_acc
+    best_trained_ce = None
+    final_ce, final_acc = start_ce, start_acc
     best_path = 0
     reached_path = None
     reached_s = None
@@ -170,16 +172,23 @@ def run_condition(v, u, train_F, train_T, val_F, val_T, indices, lr, checkpoint)
                 break
             history.append({"path": path_id, "val_ce": ce, "val_acc": acc,
                             "train_seconds": train_seconds})
+            final_ce, final_acc = ce, acc
+            best_trained_ce = ce if best_trained_ce is None else min(best_trained_ce, ce)
             if ce < best_ce:
                 best_ce = ce; best_acc = acc; best_path = path_id
             if reached_path is None and ce <= 0.95 * start_ce:
                 reached_path, reached_s = path_id, train_seconds
     row = {"initial_v": float(v), "fixed_u": float(u), "status": status,
            "initial_val_ce": start_ce, "best_val_ce": best_ce,
+           "best_trained_val_ce": best_trained_ce, "final_val_ce": final_ce,
+           "final_val_acc": final_acc,
            "min_error_delta": start_ce - best_ce, "best_val_acc": best_acc,
+           "learned": bool(best_ce < start_ce - 1e-8),
            "best_path": best_path, "paths_to_5pct_ce_improvement": reached_path,
            "train_seconds_to_5pct": reached_s, "total_train_seconds": train_seconds,
            "spikes_e": total_spikes_e, "spikes_m": total_spikes_m,
+           "e_spike_fraction": total_spikes_e / max(1, path_id * p3.FORCE_STEPS * p3.N_SUB * len(ve)),
+           "m_spike_fraction": total_spikes_m / max(1, path_id * p3.FORCE_STEPS * p3.N_SUB * len(vm)),
            "paths_completed": path_id}
     return row, history
 
